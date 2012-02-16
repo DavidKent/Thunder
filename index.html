@@ -20,10 +20,13 @@
         <script src="./js/base/scene.js"></script>
         <script src="./js/base/selection.js"></script>
         <script src="./js/base/terrain.js"></script>
+        <canvas width="255" height="255" id="terrainPainter"></canvas>
         <script>
-            //$("#canvas").hide();
+            var hide = function() {
+                $("#terrainPainter").hide();
+                buildTerrain('assets/terrain/mission1_heightMap.png','assets/terrain/mission1_diffuseMap.png');
+            }
+            $(document).ready(hide);
         </script>
-
-        <canvas width="255" height="255" id="test"></canvas>
     </body>
 </html>

@@ -21,7 +21,7 @@
         pl.y = 1;
         scene.add(pl);
         
-         directionalLight = new THREE.DirectionalLight(0xffffff);
+        directionalLight = new THREE.DirectionalLight(0xffffff);
         directionalLight.position.set(12, 16, -13).normalize();
         directionalLight.lookAt(scene.position);
         scene.add(directionalLight);
