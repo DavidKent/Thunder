@@ -1,31 +1,46 @@
-    var camera, container, t = 0, scene, renderer, mousePos, selected, selector, skin, move = { h: 0, v: 0},
+    var camera, container, t = 0, scene, renderer, mousePos, selected, selector, skin, move = { h: 0, v: 0},directionalLight,
     look = { h: -30, v: 0};
+    var clock = new THREE.Clock, controls;
     var width = window.innerWidth - 100, height = window.innerHeight - 100;
     var init = function() {
         container = document.createElement('div');
         document.body.appendChild(container);
         camera = new THREE.PerspectiveCamera(35, (width) / (height), 1, 2000);
         camera.target = new THREE.Vector3(0, 0, 0);
+        controls = new THREE.FirstPersonControls( camera );
+        controls.movementSpeed = 10;
+        controls.lookSpeed = 0.2;
+        controls.activeLook = false;
+        controls.lon = -229;
+        controls.lat = -29;
+        
         scene = new THREE.Scene();
         scene.add(camera);
+        scene.add(new THREE.AmbientLight(0x00020));
+          var pl = new THREE.PointLight(0xffffff, 3, 20);
+        pl.y = 1;
+        scene.add(pl);
+        
+         directionalLight = new THREE.DirectionalLight(0xffffff);
+        directionalLight.position.set(12, 16, -13).normalize();
+        directionalLight.lookAt(scene.position);
+        scene.add(directionalLight);
+        
         addGrid(22);
         addSelectionBounds();
-        addTestObject();
-        scene.add(new THREE.AmbientLight(0xffffff, 3));
-
-        renderer = new THREE.WebGLRenderer();
+        addTestObject();  
+        renderer = new THREE.WebGLRenderer({antialias:true});
         renderer.AA = 12;
         renderer.setSize(width, height);
-        
         container.appendChild(renderer.domElement);
         animate();
-        camera.position = new THREE.Vector3(5,10,12);
-        camera.lookAt(selector.position);
+        camera.position = new THREE.Vector3(20,21,-30);
+        camera.lookAt(scene.position);
     };
     
     var addTestObject = function() {
         for(var i = 0; i < Math.random() * 10; i++) {
-            var mesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 3, 4 ), new THREE.MeshBasicMaterial({ color:(Math.random()*0x990033)}));
+            var mesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 3, 4 ), new THREE.MeshLambertMaterial({ color:(Math.random()*0x990033)}));
             mesh.position = new THREE.Vector3(Math.random()*10, Math.random()*10, Math.random()*10);
             scene.add( mesh );
         }
@@ -64,16 +79,10 @@
         scene.add(line);
         line.position.set(0, 0, 0);
     };
-    var camLook = function() {
-        theta = look.h * Math.PI / 180;
-        camera.target.x = 180 * Math.cos( theta );
-        camera.target.y = look.v;
-        camera.target.z = 180 * Math.sin( theta );
-        camera.lookAt( camera.target );
-    }
+
     var render = function() {
-        camLook();
         renderer.render(scene, camera);
+        controls.update( clock.getDelta() );
     };
     
     var animate = function() {
