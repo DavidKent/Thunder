@@ -22,8 +22,7 @@
                 terrain.computeCentroids();
                 terrain_mesh.rotation.x = -90 * Math.PI/180;
                 terrain_mesh.y = -5;
-                scene.add(terrain_mesh);
-                //$("#terrainPainter").hide();
+                scene.add(terrain_mesh); 
             }
             $(terrain_maps.diffuse).load(loadDiffuse);
         }

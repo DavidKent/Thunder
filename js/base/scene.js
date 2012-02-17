@@ -13,19 +13,16 @@
         controls.activeLook = false;
         controls.lon = -229;
         controls.lat = -29;
-        
         scene = new THREE.Scene();
         scene.add(camera);
         scene.add(new THREE.AmbientLight(0x00020));
           var pl = new THREE.PointLight(0xffffff, 3, 20);
         pl.y = 1;
         scene.add(pl);
-        
         directionalLight = new THREE.DirectionalLight(0xffffff);
         directionalLight.position.set(12, 16, -13).normalize();
         directionalLight.lookAt(scene.position);
         scene.add(directionalLight);
-        
         addGrid(22);
         addSelectionBounds();
         addTestObject();  
@@ -62,22 +59,15 @@
     };
     
     var addGrid = function(size) {
-        var line_material = new THREE.LineBasicMaterial({
+        var line_material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
+            wireframe:true,
             opacity: 0.2
         });
-        var geometry = new THREE.Geometry(),
-        floor = -0.04,
-        step = 1;
-        for (var i = 0; i <= size / step * 2; i++) {
-            geometry.vertices.push(new THREE.Vertex(new THREE.Vector3(-size, floor, i * step - size)));
-            geometry.vertices.push(new THREE.Vertex(new THREE.Vector3(size, floor, i * step - size)));
-            geometry.vertices.push(new THREE.Vertex(new THREE.Vector3(i * step - size, floor, -size)));
-            geometry.vertices.push(new THREE.Vertex(new THREE.Vector3(i * step - size, floor, size)));
-        }
-        var line = new THREE.Line(geometry, line_material, THREE.LinePieces);
-        scene.add(line);
-        line.position.set(0, 0, 0);
+        var geometry = new THREE.PlaneGeometry(25,25,12,12);
+        var mesh = new THREE.Mesh(geometry, line_material);
+        mesh.rotation.x = -90 * Math.PI/180;
+        scene.add(mesh);
     };
 
     var render = function() {
