@@ -2,7 +2,6 @@
     var turning = false;
     function document_onReady() {
         $(document).click(onMouseClick);
-     //   $(document).keydown(onKeyDown);
         $(document).mousedown(onMouseDown);
         $(document).mouseup(onMouseUp);
         $(document).bind("contextmenu", function(e){ return false; })

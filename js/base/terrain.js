@@ -6,6 +6,29 @@
     function terrainPrefix() {
         return "assets/terrain/";
     }
+
+    function getMatShader() {
+        var fShader = $('#terrain_fragmentshader');
+        var vShader = $('#terrain_vertexshader');
+        var uniforms = {
+					m_grass: { type: "t", value: 0, texture: THREE.ImageUtils.loadTexture( "assets/terrain/grass.jpg" ) },
+					m_dirt: { type: "t", value: 1, texture: THREE.ImageUtils.loadTexture( "assets/terrain/rocks.jpg" ) },
+                    m_sand: { type: "t", value: 2, texture: THREE.ImageUtils.loadTexture( "assets/terrain/sand.jpg" ) },
+                    m_alpha: { type: "t", value: 3, texture: THREE.ImageUtils.loadTexture( "assets/terrain/mission1_diffuseMap.png" ) },
+                    uvScale: { type: "v2", value: new THREE.Vector2( 1.0, 1.0 ) }
+				};
+            uniforms.m_grass.texture.wrapS = uniforms.m_grass.texture.wrapT = THREE.Repeat;
+			uniforms.m_dirt.texture.wrapS = uniforms.m_dirt.texture.wrapT = THREE.Repeat;
+            uniforms.m_sand.texture.wrapS = uniforms.m_sand.texture.wrapT = THREE.Repeat;
+            uniforms.m_alpha.texture.wrapS = uniforms.m_alpha.texture.wrapT = THREE.Repeat;
+            
+        var shaderMaterial = new THREE.ShaderMaterial({
+            fragmentShader: fShader.text(),
+            vertexShader: vShader.text(),
+            uniforms: uniforms
+        });
+        return shaderMaterial;
+    }
     function buildTerrain(heightMap, diffuseMap){
         terrain_maps.height.src = heightMap;
         var loadHeight = function() {
@@ -15,14 +38,42 @@
                    terrain.vertices[x].position.z = (data[x]);
             terrain_maps.diffuse.src = diffuseMap;
             var loadDiffuse = function() {
-                var lightedImage = bakeLighting(data, terrain_maps.diffuse);
-                var test = new THREE.Texture(lightedImage);
-                test.needsUpdate = true;
-                terrain_mesh = new THREE.Mesh( terrain, new THREE.MeshBasicMaterial({map:test, overdraw:true}));
+                //var lightedImage = bakeLighting(data, terrain_maps.diffuse);
+                //var test = new THREE.Texture(lightedImage);
+                //test.needsUpdate = true;
+                //terrain_mesh = new THREE.Mesh( terrain, new THREE.MeshBasicMaterial({color:0xffffff, overdraw:true}));
+                terrain_mesh = new THREE.Mesh( terrain, getMatShader() ); // 
+                terrain_mesh.geometry.dynamic = true;
+                terrain_mesh.geometry.__dirtyVertices = true;
                 terrain.computeCentroids();
                 terrain_mesh.rotation.x = -90 * Math.PI/180;
                 terrain_mesh.y = -5;
                 scene.add(terrain_mesh); 
+                var verts = terrain_mesh.geometry.vertices.length;
+                var col = parseInt(Math.sqrt(verts));
+                var center = parseInt(verts/2);
+                /*
+                for(var i = center - 10; i < center; i++)
+                    {
+                        var loc = parseInt(i + ((Math.random()*2-1) * col));
+                       
+                        var vertex = terrain_mesh.geometry.vertices[loc];
+                        var putGrass = Math.random() > 0.6 ? true : false;
+                        if(putGrass) {
+                            createGrass(vertex.position, 'grass.png');
+                            camera.position = vertex.position;
+                            vertices.push(vertex);
+                        }
+                    }
+                    */
+                setupGrass('grass.png');
+                for(var i = 0; i < 1000; i++)
+                {
+                    var u = parseInt(Math.random() * (verts));
+                    var vertex = terrain_mesh.geometry.vertices[u];
+                    pushGrassLoc(vertex.position); 
+                }
+                addGrassToScene();
             }
             $(terrain_maps.diffuse).load(loadDiffuse);
         }
@@ -60,7 +111,7 @@
         rebakeLighting(terrainPrefix()+"mission1_newHeightMap.png",terrainPrefix()+"mission1_diffuseMap.png");
     }
     function rebakeLighting(heightMap, diffuseMap){ 
-        terrain_maps.height.src = heightMap;
+        /*terrain_maps.height.src = heightMap;
         var loadHeight = function() {
             var data = getHeightData();
             terrain_maps.diffuse.src = diffuseMap;
@@ -73,10 +124,10 @@
             }
             $(terrain_maps.diffuse).load(loadDiffuse);
         }
-        $(terrain_maps.height).load(loadHeight);
+        $(terrain_maps.height).load(loadHeight);*/
     }
     
-    function bakeLighting(data, diffuse) {
+    function bakeLighting(data, diffuse) {/*
         var canvas, context, imageData,
         level, diff, vector3, sun, shade;
         vector3 = new THREE.Vector3( 0, 0, 0 );
@@ -112,7 +163,7 @@
          
         }
         context.putImageData( image, 0, 0 );
-        return canvas;
+        return canvas;*/
         
     }
     

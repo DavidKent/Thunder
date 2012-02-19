@@ -20,13 +20,96 @@
         <script src="./js/base/scene.js"></script>
         <script src="./js/base/selection.js"></script>
         <script src="./js/base/terrain.js"></script>
+        <script src="./js/base/skybox.js"></script>
+        <script src="./js/base/foliage.js"></script>
+        <script src="./js/base/init.js"></script>
         <canvas width="255" height="255" id="terrainPainter"></canvas>
         <script>
             var hide = function() {
                 $("#terrainPainter").hide();
-                //buildTerrain('assets/terrain/mission1_heightMap.png','assets/terrain/mission1_diffuseMap.png');
             }
             $(document).ready(hide);
+            
+            function flattenTerrain() {
+                for(var i = 0 ; i < terrain_mesh.geometry.vertices.length; i++)
+                    {
+                       terrain_mesh.geometry.__dirtyVertices = true;
+                       terrain_mesh.geometry.vertices[i].position.z = 0;
+                    }
+                }
         </script>
+        <script type="x-shader/x-fragment" id="cloud_fragmentshader">
+            uniform sampler2D map;
+            uniform vec3 fogColor;
+            uniform float fogNear;
+            uniform float fogFar;
+            varying vec2 vUv;
+            void main() {
+                float depth = gl_FragCoord.z / gl_FragCoord.w;
+                float fogFactor = smoothstep( fogNear, fogFar, depth );
+                gl_FragColor = texture2D( map, vUv );
+                gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );
+                gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
+            }
+        </script>
+        <script type="x-shader/x-vertex" id="cloud_vertexshader">
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            }
+        </script>
+        <script type="x-shader/x-fragment" id="terrain_fragmentshader">
+            uniform sampler2D m_alpha, m_grass, m_dirt, m_sand, m_rock;
+            varying vec2 vUv;
+            varying vec4 texCoord;
+            varying vec3 pos;
+
+            void main(void)
+            {
+                vec4 alpha = texture2D( m_alpha, vUv ),
+                g = texture2D( m_grass, vUv * 4.0 ),
+                d = texture2D( m_dirt,  vUv * 4.0 ),
+                s = texture2D( m_sand, vUv * 4.0 ), 
+                r = texture2D( m_rock, vUv * 4.0 );
+                vec4 o;                  
+                g *= alpha.g; 
+                d = mix( g, d, alpha.r ); 
+                o = mix( d, s, alpha.b ); 
+                vec4 u = o;
+                
+                vec3 light = vec3(0.5,0.2,1.0);
+                light = normalize(light);
+                float bt = max(0.0, dot(pos, light));
+                float dd = -(bt/10.0);
+                vec4 f = vec4(u.r + dd, u.g + dd, u.b + dd, 1.0);
+                
+                //blur
+                //float blurSize = 1.0/512.0;
+
+               // if(texCoord.x > 1.0) {
+                 //   gl_FragColor = alpha;
+               // }
+                //else
+                gl_FragColor = f;
+            }
+            
+        </script>
+        <script type="x-shader/x-vertex" id="terrain_vertexshader">
+		    varying vec2 vUv;
+            varying vec4 texCoord;
+            varying vec3 pos;
+			void main()
+			{
+				vUv = uv;
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+                texCoord = projectionMatrix * mvPosition;
+                pos = normal;
+				gl_Position = projectionMatrix * mvPosition;
+			}
+
+		
+        </script>
+        
     </body>
 </html>

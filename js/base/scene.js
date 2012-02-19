@@ -1,38 +1,9 @@
-    var camera, container, t = 0, scene, renderer, mousePos, selected, selector, skin, move = { h: 0, v: 0},directionalLight,
-    look = { h: -30, v: 0};
+    var camera, container, t = 0, scene, renderer, selected, selector, skin, stats;
     var clock = new THREE.Clock, controls;
     var width = window.innerWidth - 100, height = window.innerHeight - 100;
     var init = function() {
         container = document.createElement('div');
         document.body.appendChild(container);
-        camera = new THREE.PerspectiveCamera(35, (width) / (height), 1, 2000);
-        camera.target = new THREE.Vector3(0, 0, 0);
-        controls = new THREE.FirstPersonControls( camera );
-        controls.movementSpeed = 10;
-        controls.lookSpeed = 0.2;
-        controls.activeLook = false;
-        controls.lon = -229;
-        controls.lat = -29;
-        scene = new THREE.Scene();
-        scene.add(camera);
-        scene.add(new THREE.AmbientLight(0x00020));
-          var pl = new THREE.PointLight(0xffffff, 3, 20);
-        pl.y = 1;
-        scene.add(pl);
-        directionalLight = new THREE.DirectionalLight(0xffffff);
-        directionalLight.position.set(12, 16, -13).normalize();
-        directionalLight.lookAt(scene.position);
-        scene.add(directionalLight);
-        addGrid(22);
-        addSelectionBounds();
-        addTestObject();  
-        renderer = new THREE.WebGLRenderer({antialias:true});
-        renderer.AA = 12;
-        renderer.setSize(width, height);
-        container.appendChild(renderer.domElement);
-        animate();
-        camera.position = new THREE.Vector3(20,21,-30);
-        camera.lookAt(scene.position);
     };
     
     var addTestObject = function() {
@@ -58,6 +29,72 @@
         selector.visible = false;
     };
     
+    var runSetup = function() {
+        init();
+        setupCamera();
+        setupScene();
+        setupControls();
+        addLights();
+        addSelectionBounds();
+        addTestObject();  
+        addGrid();
+        setupRenderer();
+        addStats();
+        animate();
+        setupTerrain();
+        loadSkybox();
+    };
+    
+    var setupTerrain = function() {
+        buildTerrain('assets/terrain/mission1_heightMap.png','assets/terrain/mission1_diffuseMap.png');
+    };
+    
+    var setupControls = function() {
+        controls = new THREE.FirstPersonControls( camera );
+        controls.movementSpeed = 35;
+        controls.lookSpeed = 0.2;
+        controls.activeLook = false;
+        controls.lon = -229;
+        controls.lat = -29;
+    };
+    
+    var setupScene = function() {
+        scene = new THREE.Scene();
+        scene.add(camera);
+        camera.lookAt(scene.position);
+    };
+    
+    var setupCamera = function() {
+        camera = new THREE.PerspectiveCamera(35, (width) / (height), 1, 100000);
+        camera.target = new THREE.Vector3(0, 0, 0);
+        camera.position = new THREE.Vector3(20,21,-30);
+    };
+    
+    var addStats = function() {
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.top = '0px';
+        container.appendChild( stats.domElement );
+    };
+    
+    var addLights = function() {
+        var directionalLight = new THREE.DirectionalLight(0xffffff);
+        directionalLight.position.set(12, 16, -13).normalize();
+        directionalLight.lookAt(scene.position);
+        scene.add(directionalLight);
+        scene.add(new THREE.AmbientLight(0x00020));
+        var pl = new THREE.PointLight(0xffffff, 3, 20);
+        pl.y = 1;
+        scene.add(pl);
+    };
+    
+    var setupRenderer = function() {
+        renderer = new THREE.WebGLRenderer({antialias:true});
+        renderer.AA = 12;
+        renderer.setSize(width, height);
+        container.appendChild(renderer.domElement);
+    };
+    
     var addGrid = function(size) {
         var line_material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
@@ -76,8 +113,7 @@
     };
     
     var animate = function() {
+        stats.update();
         requestAnimationFrame(animate);
         render();
     };
-    
-    init();
