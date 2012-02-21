@@ -9,11 +9,28 @@
     var addTestObject = function() {
         for(var i = 0; i < Math.random() * 10; i++) {
             var mesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 3, 4 ), new THREE.MeshLambertMaterial({ color:(Math.random()*0x990033)}));
-            mesh.position = new THREE.Vector3(Math.random()*10, Math.random()*10, Math.random()*10);
+            mesh.position = new THREE.Vector3(Math.random()*10, Math.random()*10 + 25, Math.random()*10);
             scene.add( mesh );
+            handleRB( mesh );
         }
     };
-    
+    var addTests = function() { 
+          for(var i = 0; i < Math.random() * 30; i++) {
+            var mesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 3, 4 ), new THREE.MeshLambertMaterial({ color:(Math.random()*0x990033)}));
+            mesh.position = new THREE.Vector3(camera.position.x + Math.random()*10, camera.position.y + Math.random()*10 + 25, camera.position.z + Math.random()*10);
+            scene.add( mesh );
+            handleRB( mesh );
+        }
+    }
+    var addTESTS = function() { 
+        for(var i = 0; i < 900 ; i++) {
+            var mesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 3, 4 ), new THREE.MeshLambertMaterial({ color:(Math.random()*0x990033)}));
+            var pos = terrain_mesh.matrixWorld.multiplyVector3(terrain_mesh.geometry.vertices[i].position);
+            mesh.position = pos;
+            scene.add( mesh );
+            //handleRB( mesh );
+        }
+    }
     var addSelectionBounds = function() {
         var line_material = new THREE.MeshBasicMaterial({
             color: 0x00ff33, opacity: 0.4, wireframe:true
@@ -50,7 +67,7 @@
     };
     
     var setupControls = function() {
-        controls = new THREE.FirstPersonControls( camera );
+        controls = new THREE.FirstPersonControls ( camera );
         controls.movementSpeed = 35;
         controls.lookSpeed = 0.2;
         controls.activeLook = false;

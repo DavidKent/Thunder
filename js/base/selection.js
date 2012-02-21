@@ -1,9 +1,10 @@
     $(document).ready(document_onReady);
-    var turning = false;
+    var turning = false, startPos = {};
     function document_onReady() {
         $(document).click(onMouseClick);
         $(document).mousedown(onMouseDown);
         $(document).mouseup(onMouseUp);
+       // $(document).mousemove(onMouseMove);
         $(document).bind("contextmenu", function(e){ return false; })
 
     }
@@ -39,14 +40,21 @@
         if(e.which == 3)
         {
             controls.activeLook = turning = true;
-            $(document).css(this, "hand");
+            
         }
+    }
+    function onMouseMove(e) {
+        if(!turning) return;
+        camera.rotation.x += (e.clientX - startPos.x) * 0.0001 * Math.PI / 180;
+        camera.rotation.z -= (e.clientX - startPos.x) * 0.0001 * Math.PI / 180;
+      
+       // controls.lon += (e.clientY - startPos.y) / 2;
     }
     function onMouseUp(e) {
          if(e.which == 3)
         {
-            controls.activeLook = turning = false;
-            $(document).css("cursor", "default");
+           controls.activeLook = turning = false;
+            //$(document).css("cursor", "default");
         }
     }
    
