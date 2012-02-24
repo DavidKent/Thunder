@@ -14,16 +14,20 @@
         <script src="./js/lib/jquery-ui-1.8.16.custom.min.js"></script>
         <script src="./js/lib/jquery.mousewheel.js"></script>    
         <script src="./js/lib/Three.js"></script>
+        <script src="./js/base/ray.js"></script>
         <script src="./js/lib/RequestAnimationFrame.js"></script>
         <script src="./js/lib/Stats.js"></script>
         <script src="./js/lib/Tween.js"></script>
+        <script src="./js/base/thunder.js"></script>
         <script src="./js/base/scene.js"></script>
+        <script src="./js/base/gizmo.js"></script>
         <script src="./js/base/selection.js"></script>
         <script src="./js/base/terrain.js"></script>
         <script src="./js/base/skybox.js"></script>
         <script src="./js/base/foliage.js"></script>
         <script src="./js/base/testphys.js"></script>
         <script src="./js/base/keybindings.js"></script>
+        <script src="./js/base/utils.js"></script>
         <script src="./js/base/init.js"></script>
         <canvas width="255" height="255" id="terrainPainter"></canvas>
         <script>
@@ -97,6 +101,17 @@
             }
             
         </script>
+        <style>
+            .handle{ 
+            width:25px;
+            height:25px;
+            background-image:url(assets/gizmo/div.png);
+            z-index:900000;
+            position:absolute;
+            float:left;
+            }
+        </style>
+
         <script type="x-shader/x-vertex" id="terrain_vertexshader">
 		    varying vec2 vUv;
             varying vec4 texCoord;

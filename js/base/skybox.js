@@ -1,4 +1,3 @@
-var skyboxMesh;
 function loadSkybox() {
     var urlPrefix	= "assets/skies/day_sky/";
 	var urls = [ urlPrefix + "posx.jpg", urlPrefix + "negx.jpg",
@@ -14,11 +13,13 @@ function loadSkybox() {
         uniforms    : uniforms
     });
     
-    skyboxMesh  = new THREE.Mesh( new THREE.CubeGeometry( 10000, 10000, 10000, 1, 1, 1, null, true ), material );
-    skyboxMesh.flipSided = true;
-    scene.addObject( skyboxMesh );
+    Thunder.skyboxMesh  = new THREE.Mesh( new THREE.CubeGeometry( 10000, 10000, 10000, 1, 1, 1, null, true ), material );
+    Thunder.skyboxMesh.flipSided = true;
+    Thunder.doNotSelect.push(Thunder.skyboxMesh);
+    Thunder.Scene.scene.addObject( Thunder.skyboxMesh );
    // addClouds();
 }
+/*
 function addClouds() {
     var texture = THREE.ImageUtils.loadTexture('assets/skies/cloud3.png');
     texture.magFilter = THREE.LinearMipMapLinearFilter;
@@ -41,4 +42,4 @@ function addClouds() {
     mesh.scale.addScalar(3);
     mesh.position.y = 22;
     scene.addObject(mesh);
-}
+}*/

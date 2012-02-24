@@ -1,1 +1,1 @@
-runSetup();
+var ThunderInit = new Thunder.Scene.init();

@@ -6,7 +6,7 @@ function setup_hook() {
 function document_onKeyPress(e) {
     switch(e.keyCode) {
         case 49:
-            toggleFirstPerson();
+            Thunder.Player.toggleFirstPerson();
         break;
         case 32:
             //testJump();

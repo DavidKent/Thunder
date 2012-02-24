@@ -41,11 +41,12 @@
                 var shader = getMatShader();
                 shader.needsUpdate = true;
                 terrain_mesh = new THREE.Mesh( terrain, shader ); // 
-                handleTerrain(terrain_mesh);
+                Thunder.Physics.handleTerrain(terrain_mesh);
                 terrain_mesh.geometry.dynamic = true;
                 terrain_mesh.geometry.__dirtyVertices = true;
                 terrain_mesh.rotation.x = -90 * Math.PI/180;
-                scene.add(terrain_mesh); 
+                Thunder.doNotSelect.push(terrain_mesh);
+                Thunder.Scene.scene.add(terrain_mesh); 
                 var verts = terrain_mesh.geometry.vertices.length;
                 var col = parseInt(Math.sqrt(verts));
                 var center = parseInt(verts/2);
@@ -56,7 +57,7 @@
                     var vertex = terrain_mesh.geometry.vertices[u];
                     pushGrassLoc(vertex.position); 
                 }
-                addGrassToScene();
+                //addGrassToScene();
                 
             }
             $(terrain_maps.diffuse).load(loadDiffuse);

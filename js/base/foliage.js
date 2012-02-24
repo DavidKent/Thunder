@@ -14,5 +14,5 @@ function addGrassToScene() {
     grass.position = terrain_mesh.position;
     grass.rotation = terrain_mesh.rotation;
     grass.scale = terrain_mesh.scale;
-    scene.add(grass);
+    Thunder.Scene.scene.add(grass);
 }
