@@ -80,28 +80,28 @@ Thunder.Scene.init = function() {
         Thunder.Scene.container.appendChild( Thunder.Scene.stats.domElement );
     })();
 
-    this.setupTerrain = (function() {
-        buildTerrain('assets/terrain/mission1_heightMap.png','assets/terrain/mission1_diffuseMap.png');
-    })();
+    // this.setupTerrain = (function() {
+        // buildTerrain('assets/terrain/mission1_heightMap.png','assets/terrain/mission1_diffuseMap.png');
+    // })();
 
-    this.addTestObjects = (function() {
-        for(var i = 0; i < Math.random() * 10; i++) {
-            var mesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 3, 4 ), new THREE.MeshLambertMaterial({ color:(Math.random()*0x990033)}));
-            mesh.position = new THREE.Vector3(Math.random()*10, Math.random()*10 + 25, Math.random()*10);
-            Thunder.Scene.scene.add( mesh );
-            Thunder.Physics.handleRB( mesh );
-        }
-    })();
+    // this.addTestObjects = (function() {
+        // for(var i = 0; i < Math.random() * 10; i++) {
+            // var mesh = new THREE.Mesh(new THREE.SphereGeometry( 1, 3, 4 ), new THREE.MeshLambertMaterial({ color:(Math.random()*0x990033)}));
+            // mesh.position = new THREE.Vector3(Math.random()*10, Math.random()*10 + 25, Math.random()*10);
+            // Thunder.Scene.scene.add( mesh );
+            // Thunder.Physics.handleRB( mesh );
+        // }
+    // })();
 
-    this.addGizmo = (function() {
-        Thunder.translateGizmo = new Gizmo('translate');
-        Thunder.translateGizmo.init();
-        Thunder.translateGizmo.hide();
-    })();
+    // this.addGizmo = (function() {
+        // Thunder.translateGizmo = new Gizmo('translate');
+        // Thunder.translateGizmo.init();
+        // Thunder.translateGizmo.hide();
+    // })();
 
-    this.addSky = (function() {
-        loadSkybox();
-    })();
+    // this.addSky = (function() {
+        // loadSkybox();
+    // })();
     
     this.runAnimation = (function() {
         Thunder.Scene.animate();
