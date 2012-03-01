@@ -45,23 +45,37 @@
                 }
         </script>
         <script type="x-shader/x-fragment" id="cloud_fragmentshader">
-            uniform sampler2D map;
-            uniform vec3 fogColor;
-            uniform float fogNear;
-            uniform float fogFar;
+            uniform sampler2D Texture1;
             varying vec2 vUv;
+            varying vec2 texcoord;
             void main() {
-                float depth = gl_FragCoord.z / gl_FragCoord.w;
-                float fogFactor = smoothstep( fogNear, fogFar, depth );
-                gl_FragColor = texture2D( map, vUv );
-                gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );
-                gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
+               vec4 sum = vec4(0);
+               int j;
+               int i;
+
+               for( i= -4 ;i < 4; i++) {
+                    for (j = -3; j < 3; j++) {
+                        sum += texture2D(Texture1, texcoord + vec2(j, i)*0.004) * 0.25;
+                    }
+                }
+                if (texture2D(Texture1, texcoord).r < 0.3) {
+                   gl_FragColor = sum*sum*0.012 + texture2D(Texture1, texcoord);
+                }
+                else {
+                    if (texture2D(Texture1, texcoord).r < 0.5) {
+                        gl_FragColor = sum*sum*0.009 + texture2D(Texture1, texcoord);
+                    }
+                    else {
+                        gl_FragColor = sum*sum*0.0075 + texture2D(Texture1, texcoord);
+                    }
+                }
             }
         </script>
         <script type="x-shader/x-vertex" id="cloud_vertexshader">
-            varying vec2 vUv;
+            varying vec2 vUv, vec2 texcoord;
             void main() {
                 vUv = uv;
+                texcoord = (projectionMatrix * (modelViewMatrix * vec4( position, 1.0 ))).xy;
                 gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
             }
         </script>
